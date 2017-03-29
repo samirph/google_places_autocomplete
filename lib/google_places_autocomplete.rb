@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'httparty'
+require 'typhoeus'
 require 'hashie'
 require File.join(File.dirname(__FILE__), 'google_places_autocomplete', 'client')
 
@@ -13,4 +13,3 @@ module GooglePlacesAutocomplete
     attr_accessor :api_key
   end
 end
-

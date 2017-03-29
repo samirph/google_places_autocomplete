@@ -1,16 +1,16 @@
 module GooglePlacesAutocomplete
-  
+
   class Client
-    include HTTParty
-    base_uri "https://maps.googleapis.com/maps/api/place"
-    format :json
-    
+    include Typhoeus
+    Base_uri="https://maps.googleapis.com/maps/api/place"
+    format "json"
+
     attr_reader :api_key
-                
+
     def initialize(options={})
       @api_key = options[:api_key] || GooglePlaces.api_key
     end
-    
+
     def autocomplete(options={})
       sensor = options.delete(:sensor) || false
       types  = options.delete(:types)
@@ -40,14 +40,14 @@ module GooglePlacesAutocomplete
         :userIp => user_ip,
         :quotaUser => quota_user
       }
-      
+
       if types
         types = (types.is_a?(Array) ? types.join('|') : types)
         options.merge!(:types => types)
       end
-      
+
       options = options.delete_if {|key, value| value.nil?}
-      mashup(self.class.get("/autocomplete/json", :query => options.merge(self.default_options)))
+      mashup(Typhoeus.get(Base_uri+"/autocomplete/json", :params => options.merge(self.default_options)))
     end
 
     def details(options={})
@@ -64,26 +64,23 @@ module GooglePlacesAutocomplete
         }
       end
 
-      mashup(self.class.get("/details/json", :query => options.merge(self.default_options)))
+      mashup(Typhoeus.get(Base_uri+"/details/json", :params => options.merge(self.default_options)))
     end
-    
+
     protected
-    
+
     def default_options
       { :sensor => false, :key => @api_key }
     end
-    
+
     def mashup(response)
+      body = JSON.parse response.response_body
       case response.code
         when 200
-          if response.is_a?(Hash)
-            Hashie::Mash.new(response)
+          if body.is_a?(Hash)
+            body
           else
-            if response.first.is_a?(Hash)
-              response.map{|item| Hashie::Mash.new(item)}
-            else
-              response
-            end
+            {}
           end
         end
       end
