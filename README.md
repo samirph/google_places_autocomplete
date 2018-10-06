@@ -5,7 +5,7 @@ Ruby wrapper for the [Google Places Autocomplete API](http://code.google.com/api
 This is a fork from [phuphighter/google_places_autocomplete](https://github.com/phuphighter/google_places_autocomplete)
 
 HTTParty gem was removed and I'm using Typhoeus for faster HTTP requests.
-The changes in the code were only workarounds to make Typhoeus work, so I don't really know that consequences those changes may have.
+The changes in the code were only workarounds to make Typhoeus work, so I don't really know what consequences those changes may have.
 
 ## Installation
 
